@@ -17,6 +17,8 @@
 
 package com.huaweicloud.sample;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -177,6 +179,12 @@ public class GovernanceController {
     throw new RuntimeException("test error");
   }
 
+  @RequestMapping("/circuitBreakerHeader")
+  public String circuitBreakerHeader(HttpServletResponse response) {
+    response.addHeader("X-HTTP-STATUS-CODE", "502");
+    return "success";
+  }
+
   @RequestMapping("/bulkhead")
   public String bulkhead() {
     return restTemplate.getForObject("http://price/hello", String.class);
@@ -187,9 +195,19 @@ public class GovernanceController {
     return restTemplate.getForObject("http://price/isolationForceOpen", String.class);
   }
 
+  @RequestMapping("/testIsolationResponseHeader")
+  public String testIsolationResponseHeader() {
+    return restTemplate.getForObject("http://price/testIsolationResponseHeader", String.class);
+  }
+
   @RequestMapping("/isolationForceOpenFeign")
   public String isolationForceOpenFeign() {
     return feignService.isolationForceOpen();
+  }
+
+  @RequestMapping("/testIsolationResponseHeaderFeign")
+  public String testIsolationResponseHeaderFeign() {
+    return feignService.testIsolationResponseHeader();
   }
 
   @RequestMapping("/gatewayIsolationForceOpenFeign")
