@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.core.env.Environment;
 
 import com.huaweicloud.governance.adapters.loadbalancer.ServiceInstanceFilter;
 
@@ -38,9 +39,13 @@ public class ZoneAwareServiceInstanceFilter implements ServiceInstanceFilter {
   @Value("${spring.cloud.servicecomb.discovery.denyCrossZoneLoadBalancing:false}")
   private boolean denyCrossZoneLoadBalancing;
 
-  public ZoneAwareServiceInstanceFilter(Registration registration, ZoneAwareFilterAdapter adapter) {
+  private final Environment env;
+
+  public ZoneAwareServiceInstanceFilter(Registration registration, ZoneAwareFilterAdapter adapter,
+      Environment environment) {
     this.registration = registration;
     this.adapter = adapter;
+    this.env = environment;
   }
 
   @Override
@@ -51,7 +56,7 @@ public class ZoneAwareServiceInstanceFilter implements ServiceInstanceFilter {
 
   @Override
   public int getOrder() {
-    return ZONE_AWARE_ORDER;
+    return env.getProperty("spring.cloud.loadbalance.filter.zone-aware.order", int.class, -100);
   }
 
   private List<ServiceInstance> zoneAwareDiscoveryFilter(List<ServiceInstance> instances) {

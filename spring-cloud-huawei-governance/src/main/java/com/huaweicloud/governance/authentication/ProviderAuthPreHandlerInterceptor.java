@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,9 @@ public class ProviderAuthPreHandlerInterceptor implements PreHandlerInterceptor 
 
   @Override
   public boolean handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    authenticationTokenManager.valid(request);
+    if (!authenticationTokenManager.checkUriWhitelist(request.getRequestURI())) {
+      authenticationTokenManager.valid(request);
+    }
     return true;
   }
 }

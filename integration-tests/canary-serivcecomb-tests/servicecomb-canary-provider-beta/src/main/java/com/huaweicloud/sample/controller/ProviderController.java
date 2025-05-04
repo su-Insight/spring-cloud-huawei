@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,46 @@
  */
 package com.huaweicloud.sample.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ProviderController {
+  private int retryCount = 0;
+
   @GetMapping("/sayHelloCanary")
   public String sayHelloCanary(@RequestParam("name") String name) {
     return "beta hello------->" + name;
+  }
+
+  @GetMapping("/contextSayHelloCanary")
+  public String contextSayHelloCanary(@RequestParam("canary") String canary) {
+    return "beta hello consumer gateway------->" + canary;
+  }
+
+  @GetMapping("retryOnSameZeroCanary")
+  public String retryOnSameZeroCanary(HttpServletResponse response) {
+    response.setStatus(502);
+    return "failed";
+  }
+
+  @GetMapping("retryOnSameOneCanary")
+  public String retryOnSameOneCanary(HttpServletResponse response) {
+    if (retryCount == 1) {
+      retryCount = 0;
+      return "beta ok";
+    }
+    response.setStatus(502);
+    retryCount++;
+    return "failed";
+  }
+
+  @GetMapping("testRetryOnSameAllCanary")
+  public String testRetryOnSameAllCanary(HttpServletResponse response) {
+    response.setStatus(502);
+    return "failed";
   }
 }

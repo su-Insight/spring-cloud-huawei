@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,11 @@ public class AuthController {
     if (StringUtils.isEmpty(invocationContext.getContext(Const.AUTH_TOKEN))) {
       return null;
     }
+    return "success";
+  }
+
+  @RequestMapping("/checkWhitelist")
+  public String checkWhitelist() {
     return "success";
   }
 }
