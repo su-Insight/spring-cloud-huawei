@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 
 import com.huaweicloud.common.configration.dynamic.GovernanceProperties;
@@ -66,7 +67,7 @@ public class WebClientConfiguration {
   }
 
   @Bean
-  public StatusCodeExtractor clientResponseStatusCodeExtractor() {
-    return new ClientResponseStatusCodeExtractor();
+  public StatusCodeExtractor clientResponseStatusCodeExtractor(Environment environment) {
+    return new ClientResponseStatusCodeExtractor(environment);
   }
 }

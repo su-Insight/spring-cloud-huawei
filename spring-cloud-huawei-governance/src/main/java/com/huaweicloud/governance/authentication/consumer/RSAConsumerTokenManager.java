@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 
 import com.huaweicloud.common.context.InvocationContext;
 import com.huaweicloud.governance.authentication.AuthenticationAdapter;
-import com.huaweicloud.governance.authentication.Const;
+import com.huaweicloud.governance.GovernanceConst;
 import com.huaweicloud.governance.authentication.RsaAuthenticationToken;
 import com.huaweicloud.governance.authentication.UnAuthorizedException;
 
@@ -104,6 +104,6 @@ public class RSAConsumerTokenManager {
     if (!token.isPresent()) {
       throw new UnAuthorizedException("auth token is not properly configured yet.");
     }
-    context.putContext(Const.AUTH_TOKEN, token.get());
+    context.putContext(GovernanceConst.AUTH_TOKEN, token.get());
   }
 }

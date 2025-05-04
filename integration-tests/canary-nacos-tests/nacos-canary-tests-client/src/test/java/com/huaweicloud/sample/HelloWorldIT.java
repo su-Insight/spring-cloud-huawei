@@ -1,6 +1,6 @@
 /*
 
-  * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+  * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -74,5 +74,17 @@ public class HelloWorldIT {
 
     double ratio = oldCount / (float) (oldCount + newCount);
     assertThat(ratio).isBetween(0.1, 0.3);
+  }
+
+  @Test
+  public void testSecurityAllowConsumer() {
+    String result = template.getForObject(Config.CONSUMER_URL + "/checkAllowConsumer", String.class);
+    Assertions.assertTrue("OK".equals(result));
+  }
+
+  @Test
+  public void testSecurityDenyConsumer() {
+    String result = template.getForObject(Config.CONSUMER_URL + "/checkDenyConsumer", String.class);
+    Assertions.assertTrue(result.startsWith("403 Forbidden"));
   }
 }

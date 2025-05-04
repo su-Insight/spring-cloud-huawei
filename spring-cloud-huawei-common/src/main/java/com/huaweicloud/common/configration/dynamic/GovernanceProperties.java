@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class GovernanceProperties {
 
   public static final int WEB_FILTER_IDENTIFIER_RATE_LIMITING_ORDER = -55000;
 
-  public static final int WEB_FILTER_INVOCATION_METRICS_ORDER = -60000;
+  public static final int WEB_FILTER_SERVICE_AUTH_ORDER = -60000;
 
   private static final int WEB_CLIENT_LOAD_BALANCE_BASE = 0;
 

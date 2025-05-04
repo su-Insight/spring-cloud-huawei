@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package com.huaweicloud.crossappsample;
 
 import com.huaweicloud.common.configration.dynamic.BlackWhiteListProperties;
+import com.huaweicloud.governance.GovernanceConst;
 import com.huaweicloud.governance.authentication.AuthHandlerBoot;
-import com.huaweicloud.governance.authentication.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.huaweicloud.common.context.InvocationContext;
 import com.huaweicloud.common.context.InvocationContextHolder;
-import com.huaweicloud.governance.authentication.ProviderAuthPreHandlerInterceptor;
 import com.huaweicloud.governance.authentication.securityPolicy.SecurityPolicyProperties;
 
 @RestController
@@ -42,16 +41,15 @@ public class AuthController {
 
   @RequestMapping("/checkToken")
   public String checkToken() {
-    ProviderAuthPreHandlerInterceptor interceptor = applicationContext.getBean(ProviderAuthPreHandlerInterceptor.class);
     AuthHandlerBoot authHandlerBoot = applicationContext.getBean(AuthHandlerBoot.class);
     BlackWhiteListProperties blackWhiteListProperties = applicationContext.getBean(BlackWhiteListProperties.class);
-    if (interceptor == null || authHandlerBoot == null || blackWhiteListProperties == null
+    if (authHandlerBoot == null || blackWhiteListProperties == null
         || blackWhiteListProperties.getBlack().size() != 2 || blackWhiteListProperties.getWhite().size() != 1) {
       return null;
     }
 
     InvocationContext invocationContext = InvocationContextHolder.getOrCreateInvocationContext();
-    if (StringUtils.isEmpty(invocationContext.getContext(Const.AUTH_TOKEN))) {
+    if (StringUtils.isEmpty(invocationContext.getContext(GovernanceConst.AUTH_TOKEN))) {
       return null;
     }
     return "success";
@@ -60,18 +58,22 @@ public class AuthController {
   @RequestMapping("/checkTokenSecurity")
   public String checkTokenSecurity() {
     SecurityPolicyProperties securityPolicyProperties = applicationContext.getBean(SecurityPolicyProperties.class);
-    ProviderAuthPreHandlerInterceptor interceptor = applicationContext.getBean(ProviderAuthPreHandlerInterceptor.class);
     AuthHandlerBoot authHandlerBoot = applicationContext.getBean(AuthHandlerBoot.class);
-    if (interceptor == null || authHandlerBoot == null || securityPolicyProperties == null
+    if (authHandlerBoot == null || securityPolicyProperties == null
         || securityPolicyProperties.getAction().getAllow().size() != 2
         || securityPolicyProperties.getAction().getDeny().size() != 2) {
       return null;
     }
 
     InvocationContext invocationContext = InvocationContextHolder.getOrCreateInvocationContext();
-    if (StringUtils.isEmpty(invocationContext.getContext(Const.AUTH_TOKEN))) {
+    if (StringUtils.isEmpty(invocationContext.getContext(GovernanceConst.AUTH_TOKEN))) {
       return null;
     }
+    return "success";
+  }
+
+  @RequestMapping("/checkWhitelist")
+  public String checkWhitelist() {
     return "success";
   }
 }

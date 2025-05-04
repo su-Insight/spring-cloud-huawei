@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -66,7 +67,7 @@ public class WebConfiguration {
   }
 
   @Bean
-  public ClientHttpResponseStatusCodeExtractor clientHttpResponseStatusCodeExtractor() {
-    return new ClientHttpResponseStatusCodeExtractor();
+  public ClientHttpResponseStatusCodeExtractor clientHttpResponseStatusCodeExtractor(Environment environment) {
+    return new ClientHttpResponseStatusCodeExtractor(environment);
   }
 }

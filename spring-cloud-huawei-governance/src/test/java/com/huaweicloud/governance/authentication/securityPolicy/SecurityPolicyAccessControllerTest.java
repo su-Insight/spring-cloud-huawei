@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -408,7 +408,7 @@ public class SecurityPolicyAccessControllerTest {
         return null;
       }
     };
-    return AuthRequestExtractorUtils.createAuthRequestExtractor(request, "", "");
+    return AuthRequestExtractorUtils.createWebMvcAuthRequestExtractor(request, "", "");
   }
 
   @Test
@@ -549,6 +549,19 @@ public class SecurityPolicyAccessControllerTest {
     AuthRequestExtractor extractor = createAuthRequestExtractor("/checkTokenPer/security/checkTokenSfu");
     Assertions.assertFalse(getAllowAccessController("enforcing")
         .isAllowed(extractor));
+  }
+
+  @Test
+  public void testPolicyIsNull() throws Exception {
+    AuthRequestExtractor extractor = createAuthRequestExtractor("/checkTokenPer/security/checkTokenSfu");
+    Assertions.assertTrue(getNoSettingAccessController()
+        .isAllowed(extractor));
+  }
+
+  private SecurityPolicyAccessController getNoSettingAccessController() {
+    securityPolicyProperties.setAction(null);
+    securityPolicyProperties.setMode(null);
+    return new SecurityPolicyAccessController(authenticationAdapter, securityPolicyProperties);
   }
 
   private SecurityPolicyAccessController getAllowAccessController(String mode) {

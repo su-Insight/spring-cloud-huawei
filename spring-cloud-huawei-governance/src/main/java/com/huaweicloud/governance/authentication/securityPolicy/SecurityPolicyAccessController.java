@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,7 @@
  */
 package com.huaweicloud.governance.authentication.securityPolicy;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +48,10 @@ public class SecurityPolicyAccessController implements AccessController {
     }
     if (StringUtils.isEmpty(currentServiceName)) {
       currentServiceName = authenticationAdapter.getServiceName(extractor.serviceId());
+    }
+    // mode is null, see not set policy, all request allow.
+    if (StringUtils.isEmpty(securityPolicyProperties.getMode())) {
+      return true;
     }
     return checkAllowAndDeny(currentServiceName, extractor);
   }

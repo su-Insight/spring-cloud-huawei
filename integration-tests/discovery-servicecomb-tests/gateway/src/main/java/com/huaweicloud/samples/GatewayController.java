@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,6 +141,17 @@ public class GatewayController {
   public Mono<String> testWebClientFaultInjectionThrowException(ServerWebExchange exchange) {
     return webClientBuilder.build().get()
         .uri("http://webflux/testWebClientFaultInjectionThrowException")
+        .attribute(InvocationContextHolder.ATTRIBUTE_KEY, exchange.getAttribute(InvocationContextHolder.ATTRIBUTE_KEY))
+        .retrieve()
+        .bodyToMono(String.class);
+  }
+
+  @GetMapping(
+      path = "/testHeaderWebClientInstanceIsolation",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<String> testHeaderWebClientInstanceIsolation(ServerWebExchange exchange) {
+    return webClientBuilder.build().get()
+        .uri("http://webflux/testHeaderWebClientInstanceIsolation")
         .attribute(InvocationContextHolder.ATTRIBUTE_KEY, exchange.getAttribute(InvocationContextHolder.ATTRIBUTE_KEY))
         .retrieve()
         .bodyToMono(String.class);

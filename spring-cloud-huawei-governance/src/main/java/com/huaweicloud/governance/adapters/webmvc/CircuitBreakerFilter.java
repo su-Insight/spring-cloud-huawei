@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,11 @@ import org.slf4j.LoggerFactory;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.decorators.Decorators;
-import io.github.resilience4j.decorators.Decorators.DecorateConsumer;
-import io.vavr.CheckedConsumer;
+import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
+import io.vavr.CheckedFunction0;
 
 public class CircuitBreakerFilter implements Filter {
   private static final Logger LOGGER = LoggerFactory.getLogger(BulkheadFilter.class);
-
-
-  private static final Object EMPTY_HOLDER = new Object();
 
   private final CircuitBreakerHandler circuitBreakerHandler;
 
@@ -52,7 +49,7 @@ public class CircuitBreakerFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
+    if (WebMvcUtils.isNotHttpServlet(request, response)) {
       chain.doFilter(request, response);
       return;
     }
@@ -61,10 +58,13 @@ public class CircuitBreakerFilter implements Filter {
     try {
       CircuitBreaker circuitBreaker = circuitBreakerHandler.getActuator(governanceRequest);
       if (circuitBreaker != null) {
-        CheckedConsumer<Object> next = (v) -> chain.doFilter(request, response);
-        DecorateConsumer<Object> decorateConsumer = Decorators.ofConsumer(next.unchecked());
-        decorateConsumer.withCircuitBreaker(circuitBreaker);
-        decorateConsumer.accept(EMPTY_HOLDER);
+        CheckedFunction0<ServletResponse> next = () -> {
+          chain.doFilter(request, response);
+          return response;
+        };
+        DecorateCheckedSupplier<ServletResponse> dcs = Decorators.ofCheckedSupplier(next);
+        dcs.withCircuitBreaker(circuitBreaker);
+        dcs.get();
         return;
       }
       chain.doFilter(request, response);
@@ -75,7 +75,7 @@ public class CircuitBreakerFilter implements Filter {
         LOGGER.warn("circuitBreaker is open : {}",
             e.getMessage());
       } else {
-        throw e;
+        throw new RuntimeException(e);
       }
     }
   }
