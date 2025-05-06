@@ -26,4 +26,24 @@ public class ProviderController {
   public String sayHelloCanary(@RequestParam("name") String name) {
     return "hello------->" + name;
   }
+
+  @GetMapping("/contextSayHelloCanary")
+  public String contextSayHelloCanary(@RequestParam("canary") String canary) {
+    return "hello consumer gateway------->" + canary;
+  }
+
+  @GetMapping("retryOnSameZeroCanary")
+  public String retryOnSameZeroCanary() {
+    return "ok";
+  }
+
+  @GetMapping("retryOnSameOneCanary")
+  public String retryOnSameOneCanary() {
+    return "ok";
+  }
+
+  @GetMapping("testRetryOnSameAllCanary")
+  public String testRetryOnSameAllCanary() {
+    return "ok";
+  }
 }
