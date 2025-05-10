@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,47 +25,31 @@ import org.apache.servicecomb.router.RouterFilter;
 import org.apache.servicecomb.router.distribute.AbstractRouterDistributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.DefaultRequestContext;
 import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.RequestData;
-import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.CollectionUtils;
 
 import com.huaweicloud.common.context.InvocationContext;
-import com.huaweicloud.common.context.InvocationContextHolder;
 import com.huaweicloud.governance.adapters.loadbalancer.DecorateLoadBalancerRequest;
-import com.huaweicloud.governance.adapters.loadbalancer.ServiceInstanceFilter;
 
-public class CanaryServiceInstanceFilter implements ServiceInstanceFilter {
-  private static final Logger LOGGER = LoggerFactory.getLogger(CanaryServiceInstanceFilter.class);
+public class RouterServiceInstanceFilter {
+  private static final Logger LOGGER = LoggerFactory.getLogger(RouterServiceInstanceFilter.class);
 
-  private final AbstractRouterDistributor<ServiceInstance> routerDistributor;
-
-  private final RouterFilter routerFilter;
-
-  @Autowired
-  public CanaryServiceInstanceFilter(AbstractRouterDistributor<ServiceInstance> routerDistributor,
-      RouterFilter routerFilter) {
-    this.routerDistributor = routerDistributor;
-    this.routerFilter = routerFilter;
-  }
-
-  @Override
-  public List<ServiceInstance> filter(ServiceInstanceListSupplier supplier, List<ServiceInstance> instances,
-      Request<?> request) {
+  public static List<ServiceInstance> filterInstance(InvocationContext invocationContext, List<ServiceInstance> instances,
+      Request<?> request, RouterFilter routerFilter, AbstractRouterDistributor<ServiceInstance> routerDistributor) {
     if (CollectionUtils.isEmpty(instances)) {
       return instances;
     }
-
-    Map<String, String> canaryHeaders = new HashMap<>();
-
-    // headers from invocation context
-    InvocationContext invocationContext = InvocationContextHolder.getOrCreateInvocationContext();
-    canaryHeaders.putAll(invocationContext.getContext());
-
+    Map<String, String> canaryHeaders;
+    if (invocationContext == null) {
+      canaryHeaders = new HashMap<>();
+    } else {
+      // headers from invocation context
+      canaryHeaders = new HashMap<>(invocationContext.getContext());
+    }
     // headers from current request
     String targetServiceName = instances.get(0).getServiceId();
     Object context = request.getContext();
@@ -88,12 +72,6 @@ public class CanaryServiceInstanceFilter implements ServiceInstanceFilter {
     }
 
     return routerFilter
-        .getFilteredListOfServers(instances, targetServiceName, canaryHeaders,
-            routerDistributor);
-  }
-
-  @Override
-  public int getOrder() {
-    return CANARY_ORDER;
+        .getFilteredListOfServers(instances, targetServiceName, canaryHeaders, routerDistributor);
   }
 }

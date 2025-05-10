@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package com.huaweicloud.router.client;
 
-import org.apache.servicecomb.router.RouterFilter;
 import org.apache.servicecomb.router.distribute.AbstractRouterDistributor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,11 +26,11 @@ import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import com.huaweicloud.router.client.loadbalancer.AffinityTagFilterAdapter;
 import com.huaweicloud.router.client.loadbalancer.AffinityTagServiceInstanceFilter;
 import com.huaweicloud.router.client.loadbalancer.CanaryFilterAdapter;
-import com.huaweicloud.router.client.loadbalancer.CanaryServiceInstanceFilter;
 import com.huaweicloud.router.client.loadbalancer.SpringCloudRouterDistributor;
 import com.huaweicloud.router.client.loadbalancer.ZoneAwareFilterAdapter;
 import com.huaweicloud.router.client.loadbalancer.ZoneAwareServiceInstanceFilter;
@@ -48,25 +47,18 @@ public class RouterClientAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean(CanaryServiceInstanceFilter.class)
-  public CanaryServiceInstanceFilter canaryServiceInstanceFilter(
-      AbstractRouterDistributor<ServiceInstance> routerDistributor, RouterFilter routerFilter) {
-    return new CanaryServiceInstanceFilter(routerDistributor, routerFilter);
-  }
-
-  @Bean
   @ConditionalOnMissingBean(ZoneAwareServiceInstanceFilter.class)
   @ConditionalOnProperty(value = "spring.cloud.servicecomb.discovery.enabledZoneAware", havingValue = "true")
   public ZoneAwareServiceInstanceFilter zoneAwareServiceInstanceFilter(Registration registration,
-      ZoneAwareFilterAdapter adapter) {
-    return new ZoneAwareServiceInstanceFilter(registration, adapter);
+      ZoneAwareFilterAdapter adapter, Environment environment) {
+    return new ZoneAwareServiceInstanceFilter(registration, adapter, environment);
   }
 
   @Bean
   @ConditionalOnMissingBean(AffinityTagServiceInstanceFilter.class)
   @ConditionalOnProperty(value = "spring.cloud.servicecomb.discovery.enabledAffinityTag", havingValue = "true")
   public AffinityTagServiceInstanceFilter affinityTagServiceInstanceFilter(Registration registration,
-      AffinityTagFilterAdapter adapter) {
-    return new AffinityTagServiceInstanceFilter(registration, adapter);
+      AffinityTagFilterAdapter adapter, Environment environment) {
+    return new AffinityTagServiceInstanceFilter(registration, adapter, environment);
   }
 }

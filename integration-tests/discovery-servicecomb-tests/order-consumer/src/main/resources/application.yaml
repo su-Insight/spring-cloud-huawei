@@ -1,7 +1,7 @@
 #
 ## ---------------------------------------------------------------------------
 ##
-## Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+## Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -77,6 +77,10 @@ servicecomb:
       matches:
         - apiPath:
             exact: "/govern/circuitBreaker"
+    circuitBreaker-header: |
+      matches:
+        - apiPath:
+            exact: "/govern/circuitBreakerHeader"
     demo-bulkhead: |
       matches:
         - apiPath:
@@ -104,6 +108,10 @@ servicecomb:
         - apiPath:
             prefix: "/testFeignFaultInjection"
           serviceName: price
+    testIsolationResponseHeader: |
+      matches:
+        - apiPath:
+            prefix: "/testIsolationResponseHeader"
   rateLimiting:
     demo-rateLimiting: |
       rate: 10
@@ -127,6 +135,14 @@ servicecomb:
         - 500
         - 502
         - 503
+    circuitBreaker-header: |
+      minimumNumberOfCalls: 10
+      slidingWindowSize: 10
+      failureRateThreshold: 20
+      recordFailureStatus:
+        - 500
+        - 502
+        - 503
   bulkhead:
     demo-bulkhead: |
       maxConcurrentCalls: 5
@@ -137,6 +153,13 @@ servicecomb:
     #      failureRateThreshold: 20
     isolationForceOpen: |
       forceOpen: true
+    testIsolationResponseHeader: |
+      minimumNumberOfCalls: 10
+      slidingWindowSize: 10
+      slidingWindowType: COUNT_BASED
+      failureRateThreshold: 20
+      waitDurationInOpenState: 1000
+      permittedNumberOfCallsInHalfOpenState: 10
   instanceBulkhead:
     feignInstanceBulkhead: |
       maxConcurrentCalls: 2

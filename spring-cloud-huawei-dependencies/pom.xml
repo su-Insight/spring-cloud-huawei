@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  ~ Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+  ~ Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,24 +22,24 @@
   <parent>
     <groupId>com.huaweicloud</groupId>
     <artifactId>spring-cloud-huawei</artifactId>
-    <version>1.11.0-2021.0.x-SNAPSHOT</version>
+    <version>1.12.0-2021.0.x-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>spring-cloud-huawei-dependencies</artifactId>
   <packaging>pom</packaging>
-  <version>1.11.0-2021.0.x-SNAPSHOT</version>
+  <version>1.12.0-2021.0.x-SNAPSHOT</version>
   <name>Spring Cloud Huawei::Dependencies</name>
 
   <properties>
     <feign-core.version>11.10</feign-core.version>
     <httpclient.version>4.5.9</httpclient.version>
-    <jackson.version>2.14.2</jackson.version>
+    <jackson.version>2.16.1</jackson.version>
     <commons-io.version>2.7</commons-io.version>
     <jmockit.version>1.36</jmockit.version>
-    <guava.version>31.1-jre</guava.version>
-    <snakeyaml.version>1.32</snakeyaml.version>
+    <guava.version>33.0.0-jre</guava.version>
+    <snakeyaml.version>2.2</snakeyaml.version>
     <commons-configuration.version>1.10</commons-configuration.version>
     <websocket.version>1.5.0</websocket.version>
     <resilience4j.version>1.7.0</resilience4j.version>
@@ -52,6 +52,15 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- put it first, otherwise it will be covered by spring-boot-dependencies -->
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
       <!-- core dependencies of spring cloud huawei, put it in the begging -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -146,13 +155,6 @@
         <version>${resilience4j.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>com.github.ulisesbocchio</groupId>

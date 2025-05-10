@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import com.huaweicloud.common.configration.dynamic.BlackWhiteListProperties;
 import com.huaweicloud.governance.authentication.AccessController;
 import com.huaweicloud.governance.authentication.AuthRequestExtractor;
 import com.huaweicloud.governance.authentication.AuthenticationAdapter;
+import com.huaweicloud.governance.authentication.MatcherUtils;
 import com.huaweicloud.governance.authentication.UnAuthorizedException;
 
 /**
@@ -93,16 +94,6 @@ public class WhiteBlackAccessController implements AccessController {
     if (StringUtils.isEmpty(propertyValue)) {
       return false;
     }
-    return isPatternMatch(propertyValue, item.getRule());
-  }
-
-  private boolean isPatternMatch(String value, String pattern) {
-    if (pattern.startsWith("*")) {
-      return value.endsWith(pattern.substring(1));
-    }
-    if (pattern.endsWith("*")) {
-      return value.startsWith(pattern.substring(0, pattern.length() - 1));
-    }
-    return value.equals(pattern);
+    return MatcherUtils.isPatternMatch(propertyValue, item.getRule());
   }
 }
