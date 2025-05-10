@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,9 +87,9 @@ public class RBACRequestAuthHeaderProvider implements AuthHeaderProvider {
     this.serviceCombRBACProperties = bootstrapProperties.getServiceCombRBACProperties();
     this.microserviceProperties = bootstrapProperties.getMicroserviceProperties();
 
-    EventManager.getEventBus().register(this);
-
     if (enabled()) {
+      EventManager.getEventBus().register(this);
+
       executorService = Executors.newFixedThreadPool(1, t -> new Thread(t, "rbac-executor"));
       cache = CacheBuilder.newBuilder()
           .maximumSize(1)

@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package com.huaweicloud.governance.adapters.web;
 
 import org.apache.servicecomb.governance.marker.GovernanceRequestExtractor;
+import org.springframework.cloud.client.loadbalancer.ServiceRequestWrapper;
 import org.springframework.http.HttpRequest;
 
 import com.huaweicloud.common.context.InvocationContextHolder;
@@ -58,6 +59,9 @@ public final class RestTemplateUtils {
 
       @Override
       public String serviceName() {
+        if (request instanceof ServiceRequestWrapper) {
+          return ((ServiceRequestWrapper) request).getRequest().getURI().getHost();
+        }
         return request.getURI().getHost();
       }
 

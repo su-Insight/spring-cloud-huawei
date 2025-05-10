@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.servicecomb.governance.handler.MapperHandler;
 import org.apache.servicecomb.governance.marker.GovernanceRequestExtractor;
@@ -46,7 +44,7 @@ public class ContextMapperFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
+    if (WebMvcUtils.isNotHttpServlet(request, response)) {
       chain.doFilter(request, response);
       return;
     }
