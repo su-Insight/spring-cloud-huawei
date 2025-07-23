@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,5 +45,25 @@ public class ConsumerController {
         .exchange("http://canary-provider/sayHelloCanary?name=World", HttpMethod.GET, entity, String.class).getBody();
     // 组合请求头与请求体参数
     return result;
+  }
+
+  @GetMapping("/checkAllowConsumer")
+  public String checkAllowConsumer() {
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+    return restTemplate.exchange("http://discovery-gateway/checkAllowConsumer", HttpMethod.GET,
+        entity, String.class).getBody();
+  }
+
+  @GetMapping("/checkDenyConsumer")
+  public String checkDenyConsumer() {
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity<Void> entity = new HttpEntity<>(headers);
+    try {
+      return restTemplate.exchange("http://discovery-gateway/checkDenyConsumer", HttpMethod.GET,
+          entity, String.class).getBody();
+    } catch (Exception e) {
+      return e.getMessage();
+    }
   }
 }
