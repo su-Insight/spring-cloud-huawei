@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,5 +126,17 @@ public class WebFluxController {
       return Mono.just(ResponseEntity.status(200).body("ok"));
     }
     return Mono.just(ResponseEntity.status(503).body("fail"));
+  }
+
+  @GetMapping(
+      path = "/testHeaderWebClientInstanceIsolation",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<ResponseEntity<String>> testHeaderWebClientInstanceIsolation() {
+    if (isolationCounter.getAndIncrement() % 3 == 0) {
+      return Mono.just(ResponseEntity.status(200)
+          .header("X-HTTP-STATUS-CODE", "503")
+          .body("ok"));
+    }
+    return Mono.just(ResponseEntity.status(200).body("ok"));
   }
 }

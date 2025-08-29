@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+
+import com.huaweicloud.governance.GovernanceConst;
 
 public class RSAProviderTokenManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(RSAProviderTokenManager.class);
@@ -54,9 +56,9 @@ public class RSAProviderTokenManager {
   public void valid(HttpServletRequest request) throws Exception {
     try {
       AuthRequestExtractor extractor;
-      if (environment.getProperty(Const.AUTH_TOKEN_CHECK_ENABLED, boolean.class, true)
-          || StringUtils.isEmpty(request.getHeader(Const.AUTH_SERVICE_NAME))) {
-        String headerTokenKey = environment.getProperty(Const.AUTH_TOKEN_HEADER_KEY, String.class,
+      if (environment.getProperty(GovernanceConst.AUTH_TOKEN_CHECK_ENABLED, boolean.class, true)
+          || StringUtils.isEmpty(request.getHeader(GovernanceConst.AUTH_SERVICE_NAME))) {
+        String headerTokenKey = environment.getProperty(GovernanceConst.AUTH_TOKEN_HEADER_KEY, String.class,
             "X-SM-Token");
         RsaAuthenticationToken rsaToken = RSATokenCheckUtils.checkTokenInfo(request, authenticationAdapter,
             headerTokenKey);
@@ -74,5 +76,18 @@ public class RSAProviderTokenManager {
       LOGGER.error("verify error", e);
       throw e;
     }
+  }
+
+  public boolean checkUriWhitelist(String uri) {
+    String whitelist = environment.getProperty(GovernanceConst.AUTH_API_PATH_WHITELIST, String.class, "");
+    if (whitelist.isEmpty()) {
+      return false;
+    }
+    for (String whiteUri : whitelist.split(",")) {
+      if (!whiteUri.isEmpty() && MatcherUtils.isPatternMatch(uri, whiteUri)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

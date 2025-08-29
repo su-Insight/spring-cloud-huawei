@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.huaweicloud.common.disovery.InstanceIDAdapter;
 import com.huaweicloud.governance.authentication.AuthenticationAdapter;
-import com.huaweicloud.governance.authentication.Const;
+import com.huaweicloud.governance.GovernanceConst;
 
 public class NacosAuthenticationAdapter implements AuthenticationAdapter {
 
@@ -63,12 +63,12 @@ public class NacosAuthenticationAdapter implements AuthenticationAdapter {
   @Override
   public void setPublicKey(Registration registration, String publicKey) {
     NacosRegistration nacosRegistration = (NacosRegistration) registration;
-    nacosRegistration.getMetadata().put(Const.INSTANCE_PUBKEY_PRO, publicKey);
+    nacosRegistration.getMetadata().put(GovernanceConst.INSTANCE_PUBKEY_PRO, publicKey);
   }
 
   @Override
   public String getPublicKeyFromInstance(String instanceId, String serviceId) {
-    return getPropertyValue(serviceId, instanceId, Const.INSTANCE_PUBKEY_PRO);
+    return getPropertyValue(serviceId, instanceId, GovernanceConst.INSTANCE_PUBKEY_PRO);
   }
 
   @Override

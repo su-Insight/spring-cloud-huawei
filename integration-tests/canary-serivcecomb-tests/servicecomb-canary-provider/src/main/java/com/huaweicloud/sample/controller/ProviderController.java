@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,5 +30,20 @@ public class ProviderController {
   @GetMapping("/contextSayHelloCanary")
   public String contextSayHelloCanary(@RequestParam("canary") String canary) {
     return "hello consumer gateway------->" + canary;
+  }
+
+  @GetMapping("retryOnSameZeroCanary")
+  public String retryOnSameZeroCanary() {
+    return "ok";
+  }
+
+  @GetMapping("retryOnSameOneCanary")
+  public String retryOnSameOneCanary() {
+    return "ok";
+  }
+
+  @GetMapping("testRetryOnSameAllCanary")
+  public String testRetryOnSameAllCanary() {
+    return "ok";
   }
 }

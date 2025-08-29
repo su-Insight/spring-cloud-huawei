@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.huaweicloud.common.context.InvocationContextHolder;
+import com.huaweicloud.governance.GovernanceConst;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +42,7 @@ public class RSATokenCheckUtils {
       AuthenticationAdapter authenticationAdapter, String headerTokenKey) throws Exception {
     String token = request.getHeader(headerTokenKey);
     if (StringUtils.isEmpty(token)) {
-      token = InvocationContextHolder.getOrCreateInvocationContext().getContext(Const.AUTH_TOKEN);
+      token = InvocationContextHolder.getOrCreateInvocationContext().getContext(GovernanceConst.AUTH_TOKEN);
     }
     if (null == token) {
       LOGGER.error("token is null, perhaps you need to set auth handler at consumer");

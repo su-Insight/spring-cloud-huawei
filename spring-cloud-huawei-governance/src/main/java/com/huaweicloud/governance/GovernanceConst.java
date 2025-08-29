@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package com.huaweicloud.governance.authentication;
+package com.huaweicloud.governance;
 
-public class Const {
+public class GovernanceConst {
   public static final String AUTH_TOKEN = "x-auth-token";
 
   public static final String INSTANCE_PUBKEY_PRO = "publickey";
@@ -27,4 +27,8 @@ public class Const {
   public static final String AUTH_TOKEN_CHECK_ENABLED = "spring.cloud.servicecomb.webmvc.publicKey.tokenCheckEnabled";
 
   public static final String AUTH_TOKEN_HEADER_KEY = "spring.cloud.servicecomb.webmvc.publicKey.headerTokenKey";
+
+  public static final String AUTH_API_PATH_WHITELIST = "spring.cloud.servicecomb.webmvc.publicKey.apiPathWhitelist";
+
+  public static final String CONTEXT_CURRENT_INSTANCE = "x-current-instance";
 }

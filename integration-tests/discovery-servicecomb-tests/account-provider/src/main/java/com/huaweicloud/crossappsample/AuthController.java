@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package com.huaweicloud.crossappsample;
 
 import com.huaweicloud.common.configration.dynamic.BlackWhiteListProperties;
+import com.huaweicloud.governance.GovernanceConst;
 import com.huaweicloud.governance.authentication.AuthHandlerBoot;
-import com.huaweicloud.governance.authentication.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     InvocationContext invocationContext = InvocationContextHolder.getOrCreateInvocationContext();
-    if (StringUtils.isEmpty(invocationContext.getContext(Const.AUTH_TOKEN))) {
+    if (StringUtils.isEmpty(invocationContext.getContext(GovernanceConst.AUTH_TOKEN))) {
       return null;
     }
     return "success";
@@ -69,9 +69,14 @@ public class AuthController {
     }
 
     InvocationContext invocationContext = InvocationContextHolder.getOrCreateInvocationContext();
-    if (StringUtils.isEmpty(invocationContext.getContext(Const.AUTH_TOKEN))) {
+    if (StringUtils.isEmpty(invocationContext.getContext(GovernanceConst.AUTH_TOKEN))) {
       return null;
     }
+    return "success";
+  }
+
+  @RequestMapping("/checkWhitelist")
+  public String checkWhitelist() {
     return "success";
   }
 }

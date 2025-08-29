@@ -1,7 +1,7 @@
 #
 ## ---------------------------------------------------------------------------
 ##
-## Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+## Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -118,6 +118,10 @@ servicecomb:
       matches:
         - apiPath:
             prefix: "/routeFaultInjectionNull"
+    testHeaderWebClientInstanceIsolation: |
+      matches:
+        - apiPath:
+            prefix: "/testHeaderWebClientInstanceIsolation"
   retry:
     gatewayRetry: |
       maxAttempts: 2
@@ -155,6 +159,14 @@ servicecomb:
       rate: 2
       identifier: user-id
   instanceIsolation:
+    testHeaderWebClientInstanceIsolation: |
+      minimumNumberOfCalls: 10
+      slidingWindowSize: 10
+      slidingWindowType: COUNT_BASED
+      failureRateThreshold: 20
+      waitDurationInOpenState: 1000
+      permittedNumberOfCallsInHalfOpenState: 10
+      order: 3
     testGatewayIsolationErrorCode: |
       minimumNumberOfCalls: 10
       slidingWindowSize: 10

@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.server.WebFilter;
 
 import com.huaweicloud.common.configration.dynamic.ContextProperties;
@@ -30,8 +31,8 @@ import com.huaweicloud.common.event.ClosedEventListener;
 @ConditionalOnWebApplication(type = Type.REACTIVE)
 public class WebFluxConfiguration {
   @Bean
-  public WebFilter invocationContextWebFilter(ContextProperties contextProperties) {
-    return new InvocationContextWebFilter(contextProperties);
+  public WebFilter invocationContextWebFilter(ContextProperties contextProperties, Environment environment) {
+    return new InvocationContextWebFilter(contextProperties, environment);
   }
 
   @Bean
