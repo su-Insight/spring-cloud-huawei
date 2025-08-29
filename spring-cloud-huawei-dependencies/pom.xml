@@ -48,6 +48,7 @@
     <springdoc.version>2.1.0</springdoc.version>
     <spring.cloud.alibaba.version>2022.0.0.0</spring.cloud.alibaba.version>
     <resilience4j.versioin>1.7.0</resilience4j.versioin>
+    <nacos.client.version>2.3.0</nacos.client.version>
   </properties>
 
   <dependencyManagement>
@@ -167,13 +168,13 @@
       </dependency>
       <dependency>
         <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         <version>${spring.cloud.alibaba.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        <version>${spring.cloud.alibaba.version}</version>
+        <groupId>com.alibaba.nacos</groupId>
+        <artifactId>nacos-client</artifactId>
+        <version>${nacos.client.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
