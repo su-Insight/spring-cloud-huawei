@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,10 +100,69 @@ public class GovernanceControllerIT {
   }
 
   @Test
+  public void testIsolationResponseHeader() throws InterruptedException {
+    AtomicBoolean notExpectedFailed = new AtomicBoolean(false);
+    AtomicLong successCount = new AtomicLong(0);
+    AtomicLong rejectedCount = new AtomicLong(0);
+
+    for (int i = 0; i < 100; i++) {
+      try {
+        String result = template.getForObject(orderServiceUrl + "/govern/testIsolationResponseHeader", String.class);
+        if (!"success".equals(result)) {
+          notExpectedFailed.set(true);
+        } else {
+          successCount.getAndIncrement();
+        }
+      } catch (Exception e) {
+        if (e instanceof HttpServerErrorException && ((HttpServerErrorException) e).getStatusCode().value() == 503) {
+          rejectedCount.getAndIncrement();
+        } else {
+          notExpectedFailed.set(true);
+        }
+      }
+    }
+
+    Assertions.assertFalse(notExpectedFailed.get());
+    Assertions.assertEquals(100, rejectedCount.get() + successCount.get());
+    Assertions.assertTrue(rejectedCount.get() >= 80);
+    Assertions.assertTrue(successCount.get() >= 6);
+    Thread.sleep(1000);
+  }
+
+  @Test
   public void testIsolationForceOpenFeign() {
     // exceptions thrown by feign is catch by spring mvc and will throw of error 500
     Assertions.assertThrows(HttpServerErrorException.class,
         () -> template.getForObject(orderServiceUrl + "/govern/isolationForceOpenFeign", String.class));
+  }
+
+  @Test
+  public void testIsolationResponseHeaderFeign() throws InterruptedException {
+    AtomicBoolean notExpectedFailed = new AtomicBoolean(false);
+    AtomicLong successCount = new AtomicLong(0);
+    AtomicLong rejectedCount = new AtomicLong(0);
+
+    for (int i = 0; i < 100; i++) {
+      try {
+        String result = template.getForObject(orderServiceUrl + "/govern/testIsolationResponseHeaderFeign", String.class);
+        if (!"success".equals(result)) {
+          notExpectedFailed.set(true);
+        } else {
+          successCount.getAndIncrement();
+        }
+      } catch (Exception e) {
+        if (e instanceof HttpServerErrorException && ((HttpServerErrorException) e).getStatusCode().value() == 503) {
+          rejectedCount.getAndIncrement();
+        } else {
+          notExpectedFailed.set(true);
+        }
+      }
+    }
+    Assertions.assertFalse(notExpectedFailed.get());
+    Assertions.assertEquals(100, rejectedCount.get() + successCount.get());
+    Assertions.assertTrue(rejectedCount.get() >= 80);
+    Assertions.assertTrue(successCount.get() >= 6);
+    Thread.sleep(1000);
   }
 
   @Test
@@ -141,6 +200,35 @@ public class GovernanceControllerIT {
     latch.await(20, TimeUnit.SECONDS);
     Assertions.assertTrue(expectedFailed.get());
     Assertions.assertFalse(notExpectedFailed.get());
+  }
+
+  @Test
+  public void testCircuitBreakerHeader() {
+    AtomicBoolean notExpectedFailed = new AtomicBoolean(false);
+    AtomicLong successCount = new AtomicLong(0);
+    AtomicLong rejectedCount = new AtomicLong(0);
+
+    for (int i = 0; i < 100; i++) {
+      try {
+        String result = template.getForObject(orderServiceUrl + "/govern/circuitBreakerHeader", String.class);
+        if (!"success".equals(result)) {
+          notExpectedFailed.set(true);
+        } else {
+          successCount.getAndIncrement();
+        }
+      } catch (Exception e) {
+        if ("429 : \"circuitBreaker is open.\"".equals(e.getMessage())) {
+          rejectedCount.getAndIncrement();
+        } else {
+          notExpectedFailed.set(true);
+        }
+      }
+    }
+
+    Assertions.assertFalse(notExpectedFailed.get());
+    Assertions.assertEquals(100, rejectedCount.get() + successCount.get());
+    Assertions.assertTrue(rejectedCount.get() >= 80);
+    Assertions.assertTrue(successCount.get() >= 6);
   }
 
   @Test

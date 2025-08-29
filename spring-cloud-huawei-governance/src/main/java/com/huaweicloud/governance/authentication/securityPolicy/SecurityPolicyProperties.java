@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package com.huaweicloud.governance.authentication.securityPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.huaweicloud.governance.authentication.MatcherUtils;
 
 public class SecurityPolicyProperties {
 
@@ -142,7 +144,7 @@ public class SecurityPolicyProperties {
     }
 
     for (ConfigurationItem item : action.allow) {
-      if (checkUri(uri, item.getUri()) && method.equals(item.getMethod())
+      if (MatcherUtils.isPatternMatch(uri, item.getUri()) && method.equals(item.getMethod())
           && item.getConsumer().equals(serviceName)) {
         return true;
       }
@@ -155,32 +157,11 @@ public class SecurityPolicyProperties {
       return false;
     }
     for (ConfigurationItem item : action.deny) {
-      if (checkUri(uri, item.getUri()) && method.equals(item.getMethod())
+      if (MatcherUtils.isPatternMatch(uri, item.getUri()) && method.equals(item.getMethod())
           && item.getConsumer().equals(serviceName)) {
         return true;
       }
     }
     return false;
-  }
-
-  private boolean checkUri(String requestUri, String patternUri) {
-    if (patternUri.endsWith("*")) {
-      String pattern = patternUri.substring(0, patternUri.indexOf("*"));
-      return requestUri.startsWith(pattern);
-    } else if (patternUri.startsWith("*")) {
-      StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append("/");
-      int index = 0;
-      for (int i = 0; i < patternUri.length(); i++) {
-        if (patternUri.charAt(i) != '*' && patternUri.charAt(i) != '/') {
-          break;
-        }
-        index++;
-      }
-      stringBuilder.append(patternUri.substring(index));
-      return requestUri.endsWith(stringBuilder.toString());
-    } else {
-      return requestUri.equals(patternUri);
-    }
   }
 }
