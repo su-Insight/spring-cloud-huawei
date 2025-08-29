@@ -1,6 +1,6 @@
 /*
 
- * Copyright (C) 2020-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (C) 2020-2024 Huawei Technologies Co., Ltd. All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,21 @@
 
 package com.huaweicloud.governance.adapters.feign;
 
+import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
+
 import com.huaweicloud.governance.StatusCodeExtractor;
+import com.huaweicloud.governance.adapters.GovernanceHeaderStatusUtils;
 
 import feign.Response;
 
 public class ResponseStatusCodeExtractor implements StatusCodeExtractor {
+  private final Environment environment;
+
+  public ResponseStatusCodeExtractor(Environment environment) {
+    this.environment = environment;
+  }
+
   @Override
   public boolean canProcess(Object response) {
     return response instanceof Response;
@@ -29,6 +39,11 @@ public class ResponseStatusCodeExtractor implements StatusCodeExtractor {
 
   @Override
   public String extractStatusCode(Object response) {
+    String statusHeaderKey = GovernanceHeaderStatusUtils.getStatusHeaderKey(environment);
+    if (!CollectionUtils.isEmpty(((Response) response).headers().get(statusHeaderKey))
+        && ((Response) response).headers().get(statusHeaderKey).stream().findFirst().isPresent()) {
+      return ((Response) response).headers().get(statusHeaderKey).stream().findFirst().get();
+    }
     return String.valueOf(((Response) response).status());
   }
 }
